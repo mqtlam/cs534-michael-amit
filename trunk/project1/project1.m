@@ -44,7 +44,7 @@ plot(plot_errors);
 fprintf('(displaying plot of errors...)\n');
 pause;
 close all
-
+pause(0.1);
 
 
 %% load data
@@ -59,9 +59,13 @@ fprintf('\nBatch Perceptron:\n');
 fprintf('\nLearned Weights:\n');
 disp(w);
 plot(plot_errors);
-pause(1);
+fprintf('(displaying plot of errors...)\n');
+pause;
 scatter_plot(X_features, y_class, w);
-
+fprintf('(displaying boundary plot...)\n');
+pause;
+close all
+pause(0.1);
 %% load data
 classification_data = csvread('iris-twoclass.csv');
 
@@ -75,8 +79,12 @@ fprintf('\nVoted Perceptron:\n');
 fprintf('\nLearned Weights:\n');
 disp(w);
 plot(plot_errors);
-pause(1);
+fprintf('(displaying plot of errors...)\n');
+pause;
 scatter_plot(X_features, y_class, w);
-
+fprintf('(displaying boundary plot...)\n');
+pause;
+close all
+pause(0.1);
 %% (cleanup)
 rng('default') % reset seed

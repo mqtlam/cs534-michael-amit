@@ -23,7 +23,7 @@ c(1) = 0;
 step = 1;
 k=1;
 W(1,:) = w;
-while (step<30)
+while (step<100)
     % shuffle rows
     aug = [X_aug y];
     aug = shuffle_rows(aug);
@@ -67,7 +67,7 @@ for i=1:k
     w_avg = c(i)*W(i,:);
 end
 
-disp (W);
-disp (c);
+%disp (W);
+%disp (c);
 w = W(k,:);
 end
