@@ -1,0 +1,61 @@
+\title{CS534 Implementation Assignment 1:\\Linear Regression, Perceptron}
+\author{
+        Amit Bawaskar, Michael Lam\\
+        EECS, Oregon State University\\
+        %\email{}
+        %\and
+}
+
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,%
+    citecolor=green,%
+    filecolor=magenta,%
+    linkcolor=red,%
+    urlcolor=cyan
+}
+
+%\underset{x}{\operatorname{argmax}}
+%\underset{x}{\operatorname{argmin}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In this assignment, we implemented two versions of linear regression and perceptron, and compared their performance.
+\end{abstract}
+
+% -------------------------------------------------
+\section{Introduction}
+We implemented linear regression to solve the regression problem. Two versions were implemented and compared for performance: batch gradient descent and stochastic gradient descent. We also implemented two different versions of perceptron to solve the binary classification problem: batch perceptron and voted perceptron. Voted perceptron provides better behavior for the non-linearly separable case of training data.
+
+\section{Linear Regression}
+This section compares the performance of our batch gradient descent and stochastic gradient descent algorithms for linear regression.
+
+\subsection{Batch Gradient Descent}
+(Report weight vector for each dataset, SSE for each test set, plot convergence)
+
+\subsection{Stochastic Gradient Descent}
+(Report weight vector for each dataset, SSE for each test set, plot convergence)
+
+\section{Perceptron}
+This section presents results from our batch perceptron and voted perceptron.
+
+\subsection{Batch Perceptron}
+(Report plot of classification error on training set, scatter plot of training data)
+
+\subsection{Voted Perceptron}
+(Report plot of classification error on training set, visualize decision boundary, report \(w_{avg}\))
+
+\section{Discussion}
+Discussion here
+
+\end{document}
+This is never printed
