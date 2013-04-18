@@ -16,7 +16,7 @@ EPSILON = .0001;
 X_aug = [ones(nExamples,1) X];
 
 % initialize parameters
-w = zeros(nFeatures + 1, 1);
+w = zeros(1, nFeatures + 1);
 c(1) = 0;
 
 % main loop
@@ -24,17 +24,23 @@ step = 1;
 k=1;
 W(1,:) = w;
 while (step<30)
+    % shuffle rows
+    aug = [X_aug y];
+    aug = shuffle_rows(aug);
+    X_aug = aug(:, 1:end-1);
+    y = aug(:, end);
     
-    X_aug = shuffle_rows(X_aug);
     for m = 1:nExamples
 %         u=0;
 %         for n = 1:k
 %             u = u + c(n) * (W(n,:) * X_aug(m,:)');
 %         end
-        for i=1:k
-            w(:) = w(:)' + W(i,:) * c(i);
-        end
-        u = w' * X_aug(m,:)';
+%         for i=1:k
+%             w(:) = w(:)' + W(i,:) * c(i);
+%         end
+%         u = w' * X_aug(m,:)';
+        u = W(k,:) * X_aug(m,:)';
+        
         if y(m)*u <= 0
             W(k+1,:) = W(k,:) + (y(m) * X_aug(m,:));
             k = k+1;
@@ -55,10 +61,11 @@ while (step<30)
     disp(step);
     step = step + 1;
 end
-% 
-% for i=1:k
-%     w_avg = c(i)*W(i,:)
-% end
+
+% compute average
+for i=1:k
+    w_avg = c(i)*W(i,:);
+end
 
 disp (W);
 disp (c);
