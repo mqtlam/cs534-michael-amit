@@ -67,7 +67,9 @@ for i=1:k
     w_avg = c(i)*W(i,:);
 end
 
+%clear all;
 %disp (W);
 %disp (c);
-w = W(k,:);
+%w = W(k,:);
+w = w_avg;
 end
