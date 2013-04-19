@@ -10,20 +10,20 @@ function [ w, plot ] = voted_perceptron( X, y )
 [nExamples, nFeatures] = size(X);
 
 % constants
-EPSILON = .0001;
+NUM_STEPS = 100;
 
 % augment X with bias terms
 X_aug = [ones(nExamples,1) X];
 
 % initialize parameters
 w = zeros(1, nFeatures + 1);
-c(1) = 0;
+k = 1;
+c(k) = 0;
+W(k,:) = w;
 
 % main loop
 step = 1;
-k=1;
-W(1,:) = w;
-while (step<100)
+while (step < NUM_STEPS)
     % shuffle rows
     aug = [X_aug y];
     aug = shuffle_rows(aug);
@@ -31,14 +31,6 @@ while (step<100)
     y = aug(:, end);
     
     for m = 1:nExamples
-%         u=0;
-%         for n = 1:k
-%             u = u + c(n) * (W(n,:) * X_aug(m,:)');
-%         end
-%         for i=1:k
-%             w(:) = w(:)' + W(i,:) * c(i);
-%         end
-%         u = w' * X_aug(m,:)';
         u = W(k,:) * X_aug(m,:)';
         
         if y(m)*u <= 0
@@ -58,7 +50,6 @@ while (step<100)
             plot(step) = plot(step) + 1;
         end
     end
-    disp(step);
     step = step + 1;
 end
 
@@ -67,9 +58,5 @@ for i=1:k
     w_avg = c(i)*W(i,:);
 end
 
-%clear all;
-%disp (W);
-%disp (c);
-%w = W(k,:);
 w = w_avg;
 end

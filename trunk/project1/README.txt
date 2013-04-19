@@ -10,7 +10,7 @@ Project Members
 ---------------
 
 Amit Bawaskar
-Michael Lam (lamm@eecs)
+Michael Lam
 
 How To Run
 ----------

@@ -66,12 +66,12 @@ fprintf('(displaying boundary plot...)\n');
 pause;
 close all
 pause(0.1);
+
 %% load data
 classification_data = csvread('iris-twoclass.csv');
 
 X_features = classification_data(:, 2:end);
 y_class = classification_data(:, 1);
-
 
 %% voted perceptron
 fprintf('\nVoted Perceptron:\n');
