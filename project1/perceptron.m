@@ -13,7 +13,7 @@ fprintf('\nVoted Perceptron:\n');
 fprintf('\nLearned Weights:\n');
 disp(w);
 plot(plot_errors);
-%pause(1);
+pause;
 scatter_plot(X_features, y_class, w);
 
 rng('default') % reset seed
