@@ -39,12 +39,35 @@ We implemented the Naive Bayes classifier to solve a document classification pro
 \section{Naive Bayes}
 Paragraph about Naive Bayes.
 
+\subsection{Model}
+Naive Bayes assumes that the features are independent.
+
+\subsection{Inference}
+Inference is performed by using Bayes Rule with the learned likelihood and prior probabilities, and using Decision Theory to select the class that maximizes the posterior probability.
+
+\subsection{Learning}
+Learning the likelihood probabilities for each feature and class is done by maximum a posteriori estimation, or equivalently applying Laplace smoothing to the maximum likelihood estimator here. Learning the prior probabilities for each class is done by finding the maximum likelihood estimator for it.
+
+\subsection{Implementation Details}
 Paragraph about implementation, namely to answer, ``Please explain how you use the log of probability to perform classification.'' Also talk about using Laplace smoothing.
 
-Paragraph about training and testing procedures.
+In this project we operated with the log of probabilities in order to avoid underflow issues. That is, for every multiplication and division operation, we instead used addition and subtraction of the log of the operands. We also stored the log of probabilities. For decision theory, we simply selected the class that maximizes the log of the posterior probability since the log function is a monotonically increasing function.
+
+We also applied Laplace smoothing to the likelihood probability of each feature and class in order to assign a default prior to words that have not been encountered.
 
 \section{Bernoulli Model}
 Paragraph about Bernoulli model.
+
+The overall test accuracy for the Bernoulli model is \textbf{0.772152}. Figure \ref{fig:confusionmat_bern} shows the confusion matrix.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[scale=1]{img/confusionmat_bern.png}
+  \caption{Confusion matrix for the Bernoulli model.}
+  \label{fig:confusionmat_bern}
+\end{figure}
+
+\section{Multinomial Model}
 
 Paragraph about Multinomial model.
 
@@ -60,14 +83,6 @@ Report the confusion matrix.
 %  \caption{Caption here}
 %  \label{fig:examplefigure}
 %\end{figure}
-
-\section{Multinomial Model}
-
-Paragraph about Multinomial model.
-
-Report overall testing accuracy.
-
-Report the confusion matrix.
 
 \end{document}
 This is never printed
