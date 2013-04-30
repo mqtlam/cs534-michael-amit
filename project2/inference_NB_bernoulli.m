@@ -12,7 +12,7 @@ function [ predictLabels ] = inference_NB_bernoulli( testData, likelihood, prior
 
 %% initialization
 [dictSize, nClasses, ~] = size(likelihood);
-nDocs = testData(end, 1); % assume data sorted; original data file!
+nDocs = testData(end, 1); % assume data sorted; original test data file!
 
 % class label predictions for each document
 predictLabels = zeros(nDocs, 1);
@@ -21,6 +21,7 @@ predictLabels = zeros(nDocs, 1);
 index = 1;
 for doc = 1:nDocs
     %% compute bag of words feature for this document
+    % assume data sorted; original test data file!
     bag = zeros(dictSize, 1);
     while (index <= size(testData, 1) && testData(index, 1) == doc)
         bag(testData(index, 2)) = 1;

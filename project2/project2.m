@@ -1,20 +1,20 @@
 %% Main script
 
-% %% load data
-% trainData = dlmread('data/train.data', ' ');
-% trainLabels = dlmread('data/train.label', ' ');
-% testData = dlmread('data/test.data', ' ');
-% testLabels = dlmread('data/test.label', ' ');
-% 
-% fid = fopen('data/newsgrouplabels.txt');
-% newsgrouplabels = textscan(fid, '%s');
-% fclose(fid);
-% newsgrouplabels = newsgrouplabels{1};
-% 
-% fid = fopen('data/vocabulary.txt');
-% vocabulary = textscan(fid, '%s');
-% fclose(fid);
-% vocabulary = vocabulary{1};
+%% load data
+trainData = dlmread('data/train.data', ' ');
+trainLabels = dlmread('data/train.label', ' ');
+testData = dlmread('data/test.data', ' ');
+testLabels = dlmread('data/test.label', ' ');
+
+fid = fopen('data/newsgrouplabels.txt');
+newsgrouplabels = textscan(fid, '%s');
+fclose(fid);
+newsgrouplabels = newsgrouplabels{1};
+
+fid = fopen('data/vocabulary.txt');
+vocabulary = textscan(fid, '%s');
+fclose(fid);
+vocabulary = vocabulary{1};
 
 %% constants
 nClasses = length(newsgrouplabels);
@@ -37,7 +37,7 @@ fprintf('Prediction accuracy for bernoulli: %f\n', accuracy);
 fprintf('Confusion matrix for bernoulli:\n');
 heatmap(confusionMat, 1:nClasses, 1:nClasses, 1);
 pause;
-return;
+
 %% train classifier for multinomial model
 tic;
 [likelihood, prior] = learn_NB_multinomial(trainData, trainLabels, nClasses, dictSize);
