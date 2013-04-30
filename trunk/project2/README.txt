@@ -16,4 +16,4 @@ How To Run
 ----------
 
 project2.m is the main script file that runs everything.
-We used MATLAB. No additional libraries required.
+We used MATLAB. Heatmap.m function included for visualizing confusion matrices. No additional libraries required.
