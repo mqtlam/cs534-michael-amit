@@ -1,10 +1,10 @@
-function [ likelihood, prior ] = learn_NB_bernoulli( trainData, trainLabels, nClasses, dictSize )
+function [ likelihood, prior ] = learn_NB_bernoulli( trainData, trainLabels, nClasses, vocabMap )
 %TRAIN_NB_BINOMIAL Trains a Naive Bayes classifier with Bernoulli model.
 %
 %   trainData:      training data, [docId wordId count] columns
 %   trainLabels:    training labels
 %   nClasses:       number of classes
-%   dictSize:       size of dictionary
+%   vocabMap:       mapping from original vocabulary to new vocabulary
 %   likelihood:     likelihood probabilities, VxKx2 matrix
 %                       V vocabulary size, K classes, 2 for x_i=1 or 0
 %                       3rd dim: 1 = p_{x_i=1|y=k}, 2 = p_{x_i=0|y=k}
@@ -12,6 +12,9 @@ function [ likelihood, prior ] = learn_NB_bernoulli( trainData, trainLabels, nCl
 %                       K classes
 
 %% initialization
+% dictionary size
+dictSize = sum(vocabMap ~= 0);
+
 % likelihood probabilities, p_{x_i=1/0|y=k}
 %   3rd dim: 1 = p_{x_i=1|y=k}, 2 = p_{x_i=0|y=k}
 %   x in dictSize, y in nClasses
@@ -36,8 +39,13 @@ nExamples = size(trainData, 1);
 for i = 1:nExamples
     docId = trainData(i, 1);
     wordId = trainData(i, 2);
+    wordId = vocabMap(wordId); % vocabulary mapping
     %count = trainData(i, 3); % not needed for bernoulli model
     class = trainLabels(docId);
+    
+    if wordId == 0 % vocabulary mapping
+        continue;
+    end
     
     nClassExamples(class) = nClassExamples(class)+1;
     nWordsPerClass(wordId, class) = ...

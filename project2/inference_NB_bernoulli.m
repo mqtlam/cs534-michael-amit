@@ -1,4 +1,4 @@
-function [ predictLabels ] = inference_NB_bernoulli( testData, likelihood, prior )
+function [ predictLabels ] = inference_NB_bernoulli( testData, likelihood, prior, vocabMap )
 %INFERENCE_NB_BERNOULLI Perform inference with trained Naive Bayes 
 %   classifier with Bernoulli model.
 %
@@ -8,6 +8,7 @@ function [ predictLabels ] = inference_NB_bernoulli( testData, likelihood, prior
 %                       3rd dim: 1 = p_{x_i=1|y=k}, 2 = p_{x_i=0|y=k}
 %   prior:          prior probabilities, K vector
 %                       K classes
+%   vocabMap:       mapping from original vocabulary to new vocabulary
 %   predictLabels:  class predictions for each document
 
 %% initialization
@@ -24,7 +25,15 @@ for doc = 1:nDocs
     % assume data sorted; original test data file!
     bag = zeros(dictSize, 1);
     while (index <= size(testData, 1) && testData(index, 1) == doc)
-        bag(testData(index, 2)) = 1;
+        wordId = testData(index, 2);
+        wordId = vocabMap(wordId); % vocabulary mapping
+        
+        if wordId == 0 % vocabulary mapping
+            index = index + 1;
+            continue;
+        end
+        
+        bag(wordId) = 1;
         index = index + 1;
     end
     
