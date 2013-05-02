@@ -1,0 +1,4 @@
+Time to train for multinomial: 0.435218 seconds
+Time to test for multinomial: 105.569782 seconds
+Prediction accuracy for multinomial: 0.779880
+Confusion matrix for multinomial:

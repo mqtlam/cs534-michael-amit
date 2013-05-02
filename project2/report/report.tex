@@ -39,6 +39,14 @@ We implemented the Naive Bayes classifier to solve a document classification pro
 \section{Naive Bayes}
 Paragraph about Naive Bayes.
 
+A Bayes Classifier model learns p(y) and p(x|y) from the training dataset and generates the likelihood estimates and prior probabilities for all the features of the dataset with respect to the class labels. In a Naive Bayes Classifier, we make the powerful assumption that all the features are taken irrespective to one another. This means that instead of calculating the joint distribution required by the normal classifier, we can learn the classifier using only the conditional distributions, 
+
+p(x|y) = p(xi|y) 
+
+for each feature.
+
+This significantly reduces over fitting and reduces the complexity of the algorithm.
+
 \subsection{Model}
 Naive Bayes assumes that the features are independent.
 
@@ -54,7 +62,8 @@ In this project we operated with the log of probabilities in order to avoid unde
 We also applied Laplace smoothing to the likelihood probability of each feature and class in order to assign a default prior to words that have not been encountered.
 
 \section{Bernoulli Model}
-Paragraph about Bernoulli model.
+
+In the Bernoulli Model, we checked if the word is present or absent in the document. Depending on the presence of the word, the classifier learned the likelihood of the word affecting the decision of the classifier.
 
 The overall test accuracy for the Bernoulli model is \textbf{0.772152}. Figure \ref{fig:confusionmat_bern} shows the confusion matrix.
 
@@ -67,20 +76,17 @@ The overall test accuracy for the Bernoulli model is \textbf{0.772152}. Figure \
 
 \section{Multinomial Model}
 
-Paragraph about Multinomial model.
+In the Multinomial Model, instead of only looking at the presence or absence of the word, we looked at the number of times the word appeared in each document. This additional information was used by the classifier to make the decision.
 
-Report overall testing accuracy.
+The overall test accuracy for the Bernoulli model is \textbf{0.779880}. Figure \ref{fig:confusionmat_multi} shows the confusion matrix.
 
-Report the confusion matrix.
 
-%Figure \ref{fig:examplefigure} is an example.
-%
-%\begin{figure}[!t]
-%  \centering
-%  \includegraphics[scale=.70]{img/path_to_image.png}
-%  \caption{Caption here}
-%  \label{fig:examplefigure}
-%\end{figure}
+\begin{figure}[!t]
+  \centering
+  \includegraphics[scale=1]{img/confusionmat_multi.png}
+  \caption{Confusion matrix for the Bernoulli model.}
+  \label{fig:confusionmat_multi}
+\end{figure}
 
 \section{Heuristics for Reducing Vocabulary Size}
 
