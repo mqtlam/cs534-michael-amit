@@ -25,62 +25,62 @@ vocabMap = 1:length(vocabulary);
 %% constants
 nClasses = length(newsgrouplabels);
 
-%% train classifier for bernoulli model
-tic;
-[likelihood, prior] = learn_NB_bernoulli(trainData, trainLabels, nClasses, vocabMap);
-trainingTime = toc;
-fprintf('Time to train for bernoulli: %f seconds\n', trainingTime);
-
-%% test classifier for bernoulli model
-tic;
-predictLabels = inference_NB_bernoulli(testData, likelihood, prior, vocabMap);
-testingTime = toc;
-fprintf('Time to test for bernoulli: %f seconds\n', testingTime);
-
-%% evaluate predictions
-[accuracy, confusionMat] = evaluate_prediction(predictLabels, testLabels);
-fprintf('Prediction accuracy for bernoulli: %f\n', accuracy);
-fprintf('Confusion matrix for bernoulli:\n');
-heatmap(confusionMat, 1:nClasses, 1:nClasses, 1);
-pause;
-
-% %% train classifier for multinomial model
+% %% train classifier for bernoulli model
 % tic;
-% [likelihood, prior] = learn_NB_multinomial(trainData, trainLabels, nClasses, vocabMap);
+% [likelihood, prior] = learn_NB_bernoulli(trainData, trainLabels, nClasses, vocabMap);
 % trainingTime = toc;
-% fprintf('Time to train for multinomial: %f seconds\n', trainingTime);
+% fprintf('Time to train for bernoulli: %f seconds\n', trainingTime);
 % 
-% %% test classifier for multinomial model
+% %% test classifier for bernoulli model
 % tic;
-% predictLabels = inference_NB_multinomial(testData, likelihood, prior, vocabMap);
+% predictLabels = inference_NB_bernoulli(testData, likelihood, prior, vocabMap);
 % testingTime = toc;
-% fprintf('Time to test for multinomial: %f seconds\n', testingTime);
+% fprintf('Time to test for bernoulli: %f seconds\n', testingTime);
 % 
 % %% evaluate predictions
 % [accuracy, confusionMat] = evaluate_prediction(predictLabels, testLabels);
-% fprintf('Prediction accuracy for multinomial: %f\n', accuracy);
-% fprintf('Confusion matrix for multinomial:\n');
+% fprintf('Prediction accuracy for bernoulli: %f\n', accuracy);
+% fprintf('Confusion matrix for bernoulli:\n');
 % heatmap(confusionMat, 1:nClasses, 1:nClasses, 1);
 % pause;
 
-%% vocabulary size study: evaluate a range of word length thresholds
-THRESHOLD_RANGE = 1:5;
-vocabStudyAccuracies = zeros(5, 1);
-fprintf('Study of vocabulary size by allowing certain word length:\n');
-i = 1;
-for threshold = THRESHOLD_RANGE
-    vocabMap = vocabTransform(vocabulary, threshold);
+%% train classifier for multinomial model
+tic;
+[likelihood, prior] = learn_NB_multinomial(trainData, trainLabels, nClasses, vocabMap);
+trainingTime = toc;
+fprintf('Time to train for multinomial: %f seconds\n', trainingTime);
 
-    %% train, test and evaluate on threshold
-    [likelihood, prior] = learn_NB_bernoulli(trainData, trainLabels, nClasses, vocabMap);
-    predictLabels = inference_NB_bernoulli(testData, likelihood, prior, vocabMap);
-    [accuracy, ~] = evaluate_prediction(predictLabels, testLabels);
-    
-    fprintf('\nKeep words > %d letters: accuracy = %f\n', threshold, accuracy);
-    vocabStudyAccuracies(i) = accuracy;
-    i = i+1;
-end
-plot(THRESHOLD_RANGE, vocabStudyAccuracies);
+%% test classifier for multinomial model
+tic;
+predictLabels = inference_NB_multinomial(testData, likelihood, prior, vocabMap);
+testingTime = toc;
+fprintf('Time to test for multinomial: %f seconds\n', testingTime);
 
-%% (cleanup)
-clearvars fid ans i THRESHOLD_RANGE
+%% evaluate predictions
+[accuracy, confusionMat] = evaluate_prediction(predictLabels, testLabels);
+fprintf('Prediction accuracy for multinomial: %f\n', accuracy);
+fprintf('Confusion matrix for multinomial:\n');
+heatmap(confusionMat, 1:nClasses, 1:nClasses, 1);
+pause;
+
+% %% vocabulary size study: evaluate a range of word length thresholds
+% THRESHOLD_RANGE = 1:5;
+% vocabStudyAccuracies = zeros(5, 1);
+% fprintf('Study of vocabulary size by allowing certain word length:\n');
+% i = 1;
+% for threshold = THRESHOLD_RANGE
+%     vocabMap = vocabTransform(vocabulary, threshold);
+% 
+%     %% train, test and evaluate on threshold
+%     [likelihood, prior] = learn_NB_bernoulli(trainData, trainLabels, nClasses, vocabMap);
+%     predictLabels = inference_NB_bernoulli(testData, likelihood, prior, vocabMap);
+%     [accuracy, ~] = evaluate_prediction(predictLabels, testLabels);
+%     
+%     fprintf('\nKeep words > %d letters: accuracy = %f\n', threshold, accuracy);
+%     vocabStudyAccuracies(i) = accuracy;
+%     i = i+1;
+% end
+% plot(THRESHOLD_RANGE, vocabStudyAccuracies);
+% 
+% %% (cleanup)
+% clearvars fid ans i THRESHOLD_RANGE
