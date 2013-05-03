@@ -50,7 +50,7 @@ for i = 1:nExamples
     nClassExamples(class) = nClassExamples(class)+count;
     nWordsPerClass(wordId, class) = ...
         nWordsPerClass(wordId, class)+count;
-    nWords = nWords + count;
+    nWords = nWords+count;
 end
 
 %% compute prior probabilities and likelihood probabilities

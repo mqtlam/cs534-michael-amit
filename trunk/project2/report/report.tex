@@ -61,7 +61,7 @@ In the Multinomial model, the likelihood is given by
 p(\textbf{x}|y) = \sum_{i=1}^{|V|} p_{i|y}^{x}
 \end{align}
 
-where \(|V|\) is the vocabulary size and \(x_i\) is the number word \(i\) appearing in the test document.
+where \(|V|\) is the vocabulary size and \(x_i\) is the number of word \(i\) appearing in the test document.
 
 \subsection{Learning}
 Learning the likelihood probabilities for each feature and class is done by maximum a posterior estimation. Equivalently this amounts to applying Laplace smoothing to the maximum likelihood estimator. The prior probabilities for each class is the maximum likelihood estimator for it.
@@ -101,24 +101,26 @@ In the Multinomial Model, instead of only looking at the presence or absence of 
 
 \section{Heuristics for Reducing Vocabulary Size}
 
-We explored one heuristic for reducing the vocabulary size in hopes of improving classification accuracy. We tried eliminating words in the dictionary that have length less than or equal to a particular threshold value. We explored thresholds from 0 to 5, meaning keeping all words to keeping only words with length greater than 5.
+We explored one heuristic for reducing the vocabulary size in hopes of improving classification accuracy. We tried eliminating words in the dictionary that have length less than or equal to a particular threshold value. We explored thresholds from 0 to 5, meaning from keeping all words to keeping only words with length greater than 5.
 
-The results in Figures \ref{fig:vocabthreshold_bern} \& \ref{fig:vocabthreshold_multi} indicate that the classification accuracy decreased as the threshold increases after 2 letters. Interestingly for the Multinomial model, accuracy increased negligibly when eliminating words up to 2 letters long. There is some intuition behind these results: it seems that words of length 3 or greater play an important role in determining the document class, while words of length 2 or fewer play a lesser role by tending to be generic English words.
+The results in Figures \ref{fig:vocabthreshold_bern} \& \ref{fig:vocabthreshold_multi} indicate that the classification accuracy decreased as the threshold increases after 2 letters. Interestingly for the Multinomial model, accuracy increased negligibly when eliminating words up to 2 letters long. There is some intuition behind these results: it seems that words of length 3 or greater play an important role in determining the document class, while words of length 2 or fewer play a lesser role by perhaps tending to be generic English words.
 
 \subsection{Future Work}
 
-There are several directions for other possible heuristics. One thought is to manually create a blacklist of commonly used words to omit from the final vocabulary. The blacklist can include words such as articles, conjunctions, prepositions, etc. However, the drawback to this approach is having to manually construct this blacklist. Another thought is to calculate the average count of all the words in a document and omit those words for learning in the multinomial model that occur more than the average count. This would remove words which occur too many times in the document. It would be interesting to see if this would help or hurt performance.
+There are several directions for other possible heuristics. One thought is to manually create a blacklist of commonly used words to omit from the final vocabulary. The blacklist can include words such as articles, conjunctions, prepositions, etc. However, the drawback to this approach is having to manually construct this blacklist.
+
+Another thought is to calculate the average count of all the words in a document and omit those words for learning in the multinomial model that occur more than the average count. This would remove words which occur ``too many times'' in the document. It would be interesting to see if this would help or hurt performance. Besides the average count, one could also compute various percentiles of counts and eliminate words above that percentile. However, the percentile would be another threshold/parameter value to tweak.
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[scale=.60]{img/vocabthreshold_bern.png}
+  \includegraphics[scale=.50]{img/vocabthreshold_bern.png}
   \caption{Classification accuracy using the Bernoulli model and varying word length thresholds. Words of length less than or equal to the threshold value are omitted in the vocabulary for learning and inference.}
   \label{fig:vocabthreshold_bern}
 \end{figure}
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[scale=.60]{img/vocabthreshold_multi.png}
+  \includegraphics[scale=.50]{img/vocabthreshold_multi.png}
   \caption{Classification accuracy using the Multinomial model and varying word length thresholds. Words of length less than or equal to the threshold value are omitted in the vocabulary for learning and inference.}
   \label{fig:vocabthreshold_multi}
 \end{figure}
