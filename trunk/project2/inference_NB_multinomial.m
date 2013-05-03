@@ -4,16 +4,15 @@ function [ predictLabels ] = inference_NB_multinomial( testData, likelihood, pri
 %   classifier with Bernoulli model.
 %
 %   testData:       test data, [docId wordId count] columns
-%   likelihood:     likelihood probabilities, VxKx2 matrix
-%                       V vocabulary size, K classes, 2 for x_i=1 or 0
-%                       3rd dim: 1 = p_{x_i=1|y=k}, 2 = p_{x_i=0|y=k}
+%   likelihood:     likelihood probabilities, VxK matrix
+%                       V vocabulary size, K classes
 %   prior:          prior probabilities, K vector
 %                       K classes
 %   vocabMap:       mapping from original vocabulary to new vocabulary
 %   predictLabels:  class predictions for each document
 
 %% initialization
-[dictSize, nClasses, ~] = size(likelihood);
+[dictSize, nClasses] = size(likelihood);
 nDocs = testData(end, 1); % assume data sorted; original test data file!
 
 % class label predictions for each document
@@ -44,7 +43,7 @@ for doc = 1:nDocs
     % note: operating on log of probabilities
     classProbs = zeros(nClasses, 1);
     for class = 1:nClasses
-        classProbs(class) = sum( bag.*likelihood(:, class, 1))...
+        classProbs(class) = sum( bag.*likelihood(:, class))...
             + prior(class);
     end
     

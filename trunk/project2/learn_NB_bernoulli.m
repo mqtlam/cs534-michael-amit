@@ -26,28 +26,32 @@ likelihood = zeros(dictSize, nClasses, 2);
 %   note: stores the log of probabilities
 prior = zeros(nClasses, 1);
 
-% counts of examples per class in training data
+% counts of documents per class in training data
 nClassExamples = zeros(nClasses, 1);
 
 % counts of particular word appearing per class in training data
 nWordsPerClass = zeros(dictSize, nClasses);
 
-% total number of training examples
+% total number of training documents
+nDocs = size(trainLabels, 1);
+
 nExamples = size(trainData, 1);
 
 %% accumulate sums to compute probabilities later
+for i = 1:nDocs
+    class = trainLabels(i, 1);
+    nClassExamples(class) = nClassExamples(class)+1;
+end
 for i = 1:nExamples
     docId = trainData(i, 1);
     wordId = trainData(i, 2);
     wordId = vocabMap(wordId); % vocabulary mapping
-    %count = trainData(i, 3); % not needed for bernoulli model
     class = trainLabels(docId);
     
     if wordId == 0 % vocabulary mapping
         continue;
     end
     
-    nClassExamples(class) = nClassExamples(class)+1;
     nWordsPerClass(wordId, class) = ...
         nWordsPerClass(wordId, class)+1;
 end
@@ -56,7 +60,7 @@ end
 for class = 1:nClasses
     %% prior probabilities
     % note: log(x/y) = log(x) - log(y)
-    prior(class) = log(nClassExamples(class)) - log(nExamples);
+    prior(class) = log(nClassExamples(class)) - log(nDocs);
     
     %% likelihood probabilities
     % p_{x_i=1|y=k}:
