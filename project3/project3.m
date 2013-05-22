@@ -30,16 +30,16 @@ for i = 1:length(ensembleSizes)
     
     % test on training examples
     predictedTrainingLabels = inferAdaBoost(trainData , hypothesis);
-    trainingErrors(i) = sum(predictedTrainingLabels == trainLabels);
+    trainingErrors(i) = sum(predictedTrainingLabels ~= trainLabels);
     
     % test on test examples
     predictedTestingLabels = inferAdaBoost(testData , hypothesis);
-    testingErrors(i) = sum(predictedTestingLabels == testLabels);
+    testingErrors(i) = sum(predictedTestingLabels ~= testLabels);
 end
 
 % plot training and testing errors
-plot(ensembleSizes, trainingErrors);
+plot(ensembleSizes, trainingErrors, 'ks--');
 pause;
-plot(ensembleSizes, testingErrors);
+plot(ensembleSizes, testingErrors, 'ks--');
 pause;
 
