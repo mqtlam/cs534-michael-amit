@@ -5,9 +5,7 @@ function [ hypothesisStruct ] = learnAdaBoost( data, labels, nIterations )
 %   nIterations:        number of iterations, a.k.a. ensemble size
 %   hypothesisStruct:   struct containing hypotheses and weights
 %                       each hypothesis:
-%                           signed index on feature to decide
-%                               positive sign = 0->0, 1->1
-%                               negative sign = 0->1, 0->1
+%                           index on feature to decide
 %                           weight (alpha) for weighted vote in the end
 
 %% setup
@@ -19,7 +17,7 @@ end
 
 hypothesisStruct.h = zeros(nIterations, 1);
 hypothesisStruct.alpha = zeros(nIterations, 1);
-    
+
 % set initial weights (distribution) to uniform
 distribution = 1/nExamples*ones(nExamples, 1);
 
@@ -41,7 +39,7 @@ for l = 1:nIterations
     % update weights (distribution) for training data
     predictedLabels = inferDecisionStump(data, h_l);
     incorrectMask = double(predictedLabels == labels);
-    distribution = distribution*(incorrectMask*exp(alpha_l)...
+    distribution = distribution.*(incorrectMask*exp(alpha_l)...
         + (1-incorrectMask)*exp(-alpha_l));
     distribution = distribution./sum(distribution);
     
