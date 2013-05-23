@@ -42,4 +42,3 @@ plot(ensembleSizes, trainingErrors, 'ks--');
 pause;
 plot(ensembleSizes, testingErrors, 'ks--');
 pause;
-

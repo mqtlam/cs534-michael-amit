@@ -5,16 +5,11 @@ function [ hypothesisStruct ] = learnAdaBoost( data, labels, nIterations )
 %   nIterations:        number of iterations, a.k.a. ensemble size
 %   hypothesisStruct:   struct containing hypotheses and weights
 %                       each hypothesis:
-%                           index on feature to decide
-%                           weight (alpha) for weighted vote in the end
+%                           .h index on feature to decide
+%                           .alpha weight for weighted vote in the end
 
 %% setup
 [nExamples, ~] = size(data);
-
-if nargin < 3
-    nIterations = 10;
-end
-
 hypothesisStruct.h = zeros(nIterations, 1);
 hypothesisStruct.alpha = zeros(nIterations, 1);
 
@@ -25,10 +20,11 @@ distribution = 1/nExamples*ones(nExamples, 1);
 for l = 1:nIterations
     % get weak classifier hypothesis and error
     h_l = learnDecisionStump(data, labels, distribution);
-    predictLabels = inferDecisionStump(data, h_l);
-    e_l = sum(distribution .* (predictLabels ~= labels));
+    predictedLabels = inferDecisionStump(data, h_l);
+    incorrectMask = double(predictedLabels ~= labels);
+    e_l = sum(distribution .* incorrectMask);
     
-    % stop if error > 1/2
+    % stop if error >= 1/2
     if e_l >= 0.5
         break;
     end
@@ -37,13 +33,11 @@ for l = 1:nIterations
     alpha_l = 1/2*log((1-e_l)/e_l);
     
     % update weights (distribution) for training data
-    predictedLabels = inferDecisionStump(data, h_l);
-    incorrectMask = double(predictedLabels == labels);
-    distribution = distribution.*(incorrectMask*exp(alpha_l)...
+    distribution = distribution .* (incorrectMask*exp(alpha_l)...
         + (1-incorrectMask)*exp(-alpha_l));
-    distribution = distribution./sum(distribution);
+    distribution = distribution ./ sum(distribution);
     
-    % keep records
+    % keep for final classifier
     hypothesisStruct.h(l) = h_l;
     hypothesisStruct.alpha(l) = alpha_l;
 end

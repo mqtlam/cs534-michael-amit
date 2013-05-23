@@ -18,32 +18,40 @@ end
 %% learn hypothesis
 entropies = zeros(nFeatures, 1);
 for feature = 1:nFeatures
-    P_X_pos = sum(weights.*double(labels == 1))/sum(weights);
-    P_X_neg = sum(weights.*double(labels == 0))/sum(weights);
-    
-    pos = data(:, feature).*labels;
-    neg = data(:, feature).*(1-labels);
+    % calculate probabilities
+    P_X_pos = sum(weights.*double(data(:, feature) == 1))/sum(weights);
+    P_X_neg = 1-P_X_pos;
     
     % calculate entropy given feature is positive
-    P_X_pos_1 = sum(weights.*double(pos == 1))...
-        / sum(weights.*double(labels == 1));
-    P_X_pos_0 = 1-P_X_pos_1;
-    H_Y_X_pos = calcEntropy([P_X_pos_1 P_X_pos_0]);
+    P_X_pos_1 = sum(weights.*data(:, feature).*labels)...
+        / sum(weights.*double(data(:, feature) == 1));
+    H_Y_X_pos = calcEntropy([P_X_pos_1 1-P_X_pos_1]);
     
     % calculate entropy given feature is negative
-    P_X_neg_1 = sum(weights.*double(neg == 1))...
-        / sum(weights.*double(labels == 0));
-    P_X_neg_0 = 1-P_X_neg_1;
-    H_Y_X_neg = calcEntropy([P_X_neg_1 P_X_neg_0]);
+    P_X_neg_1 = sum(weights.*(1-data(:, feature)).*labels)...
+        / sum(weights.*double(data(:, feature) == 0));
+    H_Y_X_neg = calcEntropy([P_X_neg_1 1-P_X_neg_1]);
     
     entropies(feature) = H_Y_X_pos*P_X_pos + H_Y_X_neg*P_X_neg;
 end
 
+% select minimum entropy (same as maximum information gain)
 [~, hypothesis] = min(entropies);
+
+% pick best test direction
+predictedLabels = inferDecisionStump(data, hypothesis);
+errorPos = sum(predictedLabels ~= labels);
+errorNeg = sum((1-predictedLabels) ~= labels);
+if errorPos > errorNeg
+    hypothesis = -hypothesis;
+end
 
 end
 
 function entropy = calcEntropy(probs)
 entropy = -sum(probs.*log2(probs));
+if isnan(entropy) % one of probs is 0
+    entropy = 0;
+end
 end
 
