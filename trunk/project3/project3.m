@@ -23,10 +23,10 @@ testingErrors = zeros(length(ensembleSizes), 1);
 
 % experiment over different ensemble sizes
 for i = 1:length(ensembleSizes)
-    size = ensembleSizes(i);
+    ensembleSize = ensembleSizes(i);
     
     % learn ensemble hypothesis
-    hypothesis = learnAdaBoost(trainData, trainLabels, size);
+    hypothesis = learnAdaBoost(trainData, trainLabels, ensembleSize);
     
     % test on training examples
     predictedTrainingLabels = inferAdaBoost(trainData , hypothesis);
@@ -38,7 +38,14 @@ for i = 1:length(ensembleSizes)
 end
 
 % plot training and testing errors
-plot(ensembleSizes, trainingErrors, 'ks--');
+plot(ensembleSizes, trainingErrors, 's--');
+xlabel('Ensemble Size');
+ylabel('Training Error');
+title('Training Error vs. Ensemble Size');
 pause;
-plot(ensembleSizes, testingErrors, 'ks--');
+
+plot(ensembleSizes, testingErrors, 's--');
+xlabel('Ensemble Size');
+ylabel('Test Error');
+title('Test Error vs. Ensemble Size');
 pause;
