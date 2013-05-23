@@ -1,38 +1,48 @@
-function [ hypothesis ] = learnDecisionStump( data, labels, weights )
+function [ hypothesis ] = learnDecisionStump( data, labels, distribution )
 %LEARNDECISIONSTUMP Learn a decision stump hypothesis given data, labels
-%and weights (distribution over data).
+%and distribution (weights over data).
 %   data:           data matrix; rows = examples, cols = features
 %   labels:         labels associated with data
-%   weights:        weights over data (elements must sum to one)
-%                   if not provided, weights not used
+%   distribution:   weights over data (elements must sum to one)
+%                   if not provided, distribution is uniform
 %   hypothesis:     index on feature to decide
 
 %% setup
 [nExamples, nFeatures] = size(data);
 
-% default: don't use weights by setting all individual weights to 1
+% default: use uniform distribution
 if nargin < 3
-    weights = ones(nExamples, 1);
+    distribution = 1/nExamples*ones(nExamples, 1);
 end
 
 %% learn hypothesis
 entropies = zeros(nFeatures, 1);
 for feature = 1:nFeatures
-    % calculate probabilities
-    P_X_pos = sum(weights.*double(data(:, feature) == 1))/sum(weights);
-    P_X_neg = 1-P_X_pos;
+    % number of weighted positive and negative examples
+    pos = sum(distribution.*labels);
+    neg = sum(distribution.*(1-labels));
     
-    % calculate entropy given feature is positive
-    P_X_pos_1 = sum(weights.*data(:, feature).*labels)...
-        / sum(weights.*double(data(:, feature) == 1));
+    % number of weighted positive and negative examples
+    % given selected feature is positive
+    featpos_pos = sum(distribution.*data(:, feature).*labels);
+    featpos_neg = sum(distribution.*data(:, feature).*(1-labels));
+    
+    % number of weighted positive and negative examples
+    % given selected feature is negative
+    featneg_pos = sum(distribution.*(1-data(:, feature)).*labels);
+    featneg_neg = sum(distribution.*(1-data(:, feature)).*(1-labels));
+    
+    % compute probabilities and entropies
+    P_X_pos = (featpos_pos+featpos_neg)/(pos+neg);
+    
+    P_X_pos_1 = featpos_pos/(featpos_pos+featpos_neg);
     H_Y_X_pos = calcEntropy([P_X_pos_1 1-P_X_pos_1]);
     
-    % calculate entropy given feature is negative
-    P_X_neg_1 = sum(weights.*(1-data(:, feature)).*labels)...
-        / sum(weights.*double(data(:, feature) == 0));
+    P_X_neg_1 = featneg_pos/(featneg_pos+featneg_neg);
     H_Y_X_neg = calcEntropy([P_X_neg_1 1-P_X_neg_1]);
     
-    entropies(feature) = H_Y_X_pos*P_X_pos + H_Y_X_neg*P_X_neg;
+    % compute entropy for feature
+    entropies(feature) = H_Y_X_pos*P_X_pos + H_Y_X_neg*(1-P_X_pos);
 end
 
 % select minimum entropy (same as maximum information gain)

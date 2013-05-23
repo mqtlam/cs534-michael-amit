@@ -9,12 +9,12 @@ function [ predictedLabels ] = inferAdaBoost( data, hypothesisStruct )
 
 %% setup
 [nExamples, ~] = size(data);
-nIterations = size(hypothesisStruct.h, 1);
+nEnsembles = size(hypothesisStruct.h, 1);
 
 %% final classifier
 % returns linear combination of weak classifiers and weights
 runningSum = zeros(nExamples, 1);
-for i = 1:nIterations
+for i = 1:nEnsembles
     if hypothesisStruct.alpha(i) ~= 0
         labels = inferDecisionStump(data, hypothesisStruct.h(i));
         labels(labels == 0) = -1;
