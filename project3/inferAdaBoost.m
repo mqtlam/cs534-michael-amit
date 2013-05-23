@@ -3,8 +3,8 @@ function [ predictedLabels ] = inferAdaBoost( data, hypothesisStruct )
 %   data:               data matrix; rows = examples, cols = features
 %   hypothesisStruct:   struct containing hypotheses and weights
 %                       each hypothesis:
-%                           index on feature to decide
-%                           weight (alpha) for weighted vote in the end
+%                           .h index on feature to decide
+%                           .alpha weight for weighted vote in the end
 %   predictedLabels:    final predicted labels
 
 %% setup
@@ -22,8 +22,7 @@ for i = 1:nIterations
     end
 end
 
-predictedLabels = runningSum > 0;
-predictedLabels(predictedLabels == -1) = 0;
+predictedLabels = double(runningSum > 0);
 
 end
 
