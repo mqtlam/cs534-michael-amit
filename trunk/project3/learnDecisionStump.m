@@ -5,7 +5,10 @@ function [ hypothesis ] = learnDecisionStump( data, labels, distribution )
 %   labels:         labels associated with data
 %   distribution:   weights over data (elements must sum to one)
 %                   if not provided, distribution is uniform
-%   hypothesis:     index on feature to decide
+%   hypothesis:     decision stump hypothesis
+%                       .feature is feature to split (feature index)
+%                       .neg is label of negative branch/leaf (0 or 1)
+%                       .pos is label of positive branch/leaf (0 or 1)
 
 %% setup
 [nExamples, nFeatures] = size(data);
@@ -46,15 +49,25 @@ for feature = 1:nFeatures
 end
 
 % select minimum entropy (same as maximum information gain)
-[~, hypothesis] = min(entropies);
+[~, hypothesis.feature] = min(entropies);
 
-% pick best test direction
-predictedLabels = inferDecisionStump(data, hypothesis);
-errorPos = sum(predictedLabels ~= labels);
-errorNeg = sum((1-predictedLabels) ~= labels);
-if errorPos > errorNeg
-    hypothesis = -hypothesis;
-end
+% recompute weighted positive and negative examples given best feature
+% to assign leaf labels of the decision stump
+featpos_pos = sum(distribution.*data(:, hypothesis.feature).*labels);
+featpos_neg = sum(distribution.*data(:, hypothesis.feature).*(1-labels));
+featneg_pos = sum(distribution.*(1-data(:, hypothesis.feature)).*labels);
+featneg_neg = sum(distribution.*(1-data(:, hypothesis.feature)).*(1-labels));
+
+hypothesis.neg = double(featneg_pos > featneg_neg);
+hypothesis.pos = double(featpos_pos > featpos_neg);
+
+% % pick best test direction
+% predictedLabels = inferDecisionStump(data, hypothesis);
+% errorPos = sum(predictedLabels ~= labels);
+% errorNeg = sum((1-predictedLabels) ~= labels);
+% if errorPos > errorNeg
+%     hypothesis = -hypothesis;
+% end
 
 end
 

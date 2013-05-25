@@ -5,12 +5,12 @@ function [ hypothesisStruct ] = learnAdaBoost( data, labels, nEnsembles )
 %   nEnsembles:         number of ensembles, a.k.a. number of iterations
 %   hypothesisStruct:   struct containing hypotheses and weights
 %                       each hypothesis:
-%                           .h index on feature to decide
-%                           .alpha weight for weighted vote in the end
+%                           .h is decision stump hypothesis
+%                           .alpha is weight for weighted vote in the end
 
 %% setup
 [nExamples, ~] = size(data);
-hypothesisStruct.h = zeros(nEnsembles, 1);
+hypothesisStruct.h = cell(nEnsembles, 1);
 hypothesisStruct.alpha = zeros(nEnsembles, 1);
 
 % set initial weights (distribution) to uniform
@@ -38,7 +38,7 @@ for l = 1:nEnsembles
     distribution = distribution ./ sum(distribution);
     
     % keep hypothesis and alpha for final classifier
-    hypothesisStruct.h(l) = h_l;
+    hypothesisStruct.h{l} = h_l;
     hypothesisStruct.alpha(l) = alpha_l;
 end
 
