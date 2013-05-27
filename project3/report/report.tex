@@ -1,4 +1,4 @@
-\title{CS534 Implementation Assignment 3:\\Ensemble of Decision Stumps}
+\title{CS534 Implementation Assignment 3:\\Bagging and AdaBoost}
 \author{
         Amit Bawaskar, Michael Lam\\
         EECS, Oregon State University\\
@@ -29,27 +29,47 @@
 \maketitle
 
 \begin{abstract}
-In this assignment, we implemented and compared Bagging and AdaBoost using decision stump as the base learner.
+In this assignment we implemented and evaluated bagging and AdaBoost using the decision stump as the base learner.
 \end{abstract}
 
 % -------------------------------------------------
 \section{Introduction}
-Introductory paragraph
+Ensemble methods such as bagging and AdaBoost work by taking a base learner and generating a set (ensemble) of hypotheses by varying the training set. The final hypothesis for classification is a majority vote of these hypotheses. The decision stump is a suitable base learner for bagging and especially AdaBoost because it is a weak learner, meaning it classifies slightly better than random.
+
+In this assignment we implemented the decision stump, bagging and AdaBoost. For each ensemble method we evaluated the training and test errors as a function of the ensemble size.
 
 \section{Decision Stump}
-Explain decision stumps and how we implemented
+The decision stump is a one level decision tree. In this assignment all features and labels are binary. Therefore the decision stump is a one level binary tree with a binary feature test at the root node connected to two leaf nodes each containing a label.
+
+Learning is done by going through every feature in the training data and computing the maximum information gain (minimum entropy). Once the feature with the maximum information gain is determined, the two leaf nodes are given the label of the majority class from splitting the training data on that feature. Inference is done by simply testing the feature and assigning the label following the appropriate branch.
+
+For AdaBoost, decision stump learning also accepts a distribution of the data as input. Therefore each training example is weighted differently based on the distribution, which affects the information gain computation and leaf node labels in every iteration of AdaBoost.
 
 \section{Bagging}
 Explain bagging and how we implemented
 
 \section{AdaBoost}
-Explain AdaBoost and how we implemented
+Explain bagging and how we implemented
 
 \section{Results}
-Show results and plots here
+For AdaBoost, figure \ref{fig:adaboost_trainerrors} plots the training errors versus the ensemble size, and figure \ref{fig:adaboost_testerrors} plots the test errors versus the ensemble size.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[scale=.75]{img/adaboost_trainerrors.png}
+  \caption{AdaBoost training errors on different ensemble sizes.}
+  \label{fig:adaboost_trainerrors}
+\end{figure}
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[scale=.75]{img/adaboost_testerrors.png}
+  \caption{AdaBoost test errors on different ensemble sizes.}
+  \label{fig:adaboost_testerrors}
+\end{figure}
 
 \section{Discussion}
-Discuss results here
+For AdaBoost, the training error appears to decrease as the ensemble size increases but then flattens out at ensemble size 15 and greater for the given training data. The test error decreases and performs the best at around ensemble size 20, but then increases afterward; this trend is typical of test curves in machine learning.
 
 %\begin{align}
 % 1+1=2
