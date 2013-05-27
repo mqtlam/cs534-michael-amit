@@ -49,7 +49,19 @@ For AdaBoost, decision stump learning also accepts a distribution of the data as
 Explain bagging and how we implemented
 
 \section{AdaBoost}
-Explain bagging and how we implemented
+Boosting is an ensemble method that considers errors from previous hypotheses to decide how to sample the training data for the next iteration. This is in contrast to bagging, which individual classifiers were independent. Boosting works when the base learner is weak learner, i.e. its classification accuracy is slightly better than random.
+
+AdaBoost is a particular boosting algorithm that maintains and updates a distribution over the training data based on the hypothesis error at each iteration. Thus each training data point is given more or less weight according to the distribution \(D\). At each iteration \(t\) AdaBoost records the current hypothesis and a weight \(\alpha_t\) computed from the weighted error \(\epsilon_t\). The distribution \(D\) is updated using the computed \(\alpha_t\).
+
+These equations are shown below, for \(m\) training examples \(x_i\) and their labels \(y_i\), distribution \(D_t(i)\) at time \(t\) for \(i\)th example, hypothesis \(h_t\) from weak base learner (i.e. decision stump) at time \(t\) and \(Z\) is a normalization factor to make \(D_{t+1}\) a distribution:
+
+\begin{align}
+ \epsilon_t = \sum_{i=1}^{m} D_t(i) I(y_i \neq h_t(x_i)) \\
+ \alpha_t = \frac{1}{2} log\left(\frac{1-\epsilon_t}{\epsilon_t}\right) \\
+ D_{t+1}(i) = \frac{ D_{t}(i)exp(-\alpha_t y_i h_t(x_i)) }{Z} & & \forall i = 1,...,m \\
+\end{align}
+
+The final hypothesis is just the sign of the weighted sum of each hypothesis and its corresponding weight \(\alpha\).
 
 \section{Results}
 For AdaBoost, figure \ref{fig:adaboost_trainerrors} plots the training errors versus the ensemble size, and figure \ref{fig:adaboost_testerrors} plots the test errors versus the ensemble size.
@@ -69,7 +81,9 @@ For AdaBoost, figure \ref{fig:adaboost_trainerrors} plots the training errors ve
 \end{figure}
 
 \section{Discussion}
-For AdaBoost, the training error appears to decrease as the ensemble size increases but then flattens out at ensemble size 15 and greater for the given training data. The test error decreases and performs the best at around ensemble size 20, but then increases afterward; this trend is typical of test curves in machine learning.
+For AdaBoost, the training error appears to decrease as the ensemble size increases but then flattens out at ensemble size 15 and greater for the given training data. This indicates that while AdaBoost continues to select new hypotheses and weights (otherwise it would terminate), the training error does not improve. Interestingly, from observing the ensemble of hypotheses for ensemble size 30, there is a brief period after iteration 15 where the decision stump uses feature 17 iteration after iteration with more or less similar weights but with different leaf node labels. This may explain why the training error doesn't improve; the hypotheses and weights after iteration 15 have negligible impact on the final classifier.
+
+The AdaBoost test (generalization) error decreases and performs the best at around ensemble size 20, but then increases afterward. This trend is typical of test curves in machine learning; it indicates that test error decreases with the training error but eventually increases due to over fitting.
 
 %\begin{align}
 % 1+1=2
