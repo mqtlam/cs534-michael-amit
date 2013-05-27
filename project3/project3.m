@@ -9,13 +9,49 @@ test = importdata('data/SPECT-test.csv');
 testLabels = test.data(:, 1);
 testData = test.data(:, 2:end);
 
-clearvars train test
+%clearvars train test
 
 %% constants
 ensembleSizes = [5, 10, 15, 20, 25, 30];
 
 %% bagging
-%TODO
+for m = 1:5
+
+trainingErrors = zeros(length(ensembleSizes), 1);
+testingErrors = zeros(length(ensembleSizes), 1);
+
+trainSet = train.data;
+% experiment over different ensemble sizes
+for i = 1:length(ensembleSizes)
+    ensembleSize = ensembleSizes(i);    
+    
+    % learn ensemble hypothesis
+    hypothesis = learnBagging(trainSet, ensembleSize);
+    
+    % test on training examples
+    predictedTrainingLabels = inferBagging(trainData , hypothesis);
+    trainingErrors(i) = trainingErrors(i) + sum(predictedTrainingLabels ~= trainLabels)/size(trainLabels, 1);
+    
+    % test on test examples
+    predictedTestingLabels = inferBagging(testData , hypothesis);
+    testingErrors(i) = testingErrors(i) + sum(predictedTestingLabels ~= testLabels)/size(testLabels, 1);
+end
+end
+
+% plot training and testing errors
+plot(ensembleSizes, trainingErrors, 's--');
+xlabel('Ensemble Size');
+ylabel('Training Error');
+title('Bagging: Training Error vs. Ensemble Size');
+pause;
+
+plot(ensembleSizes, testingErrors, 's--');
+xlabel('Ensemble Size');
+ylabel('Test Error');
+title('Bagging: Test Error vs. Ensemble Size');
+pause;
+
+clearvars predictedTrainingLabels predictedTestingLabels
 
 %% AdaBoost
 trainingErrors = zeros(length(ensembleSizes), 1);
