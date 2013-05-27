@@ -34,7 +34,7 @@ for i = 1:length(ensembleSizes)
     
     % test on test examples
     predictedTestingLabels = inferAdaBoost(testData , hypothesis);
-    testingErrors(i) = sum(predictedTestingLabels ~= testLabels)/size(trainLabels, 1);
+    testingErrors(i) = sum(predictedTestingLabels ~= testLabels)/size(testLabels, 1);
 end
 
 % plot training and testing errors
