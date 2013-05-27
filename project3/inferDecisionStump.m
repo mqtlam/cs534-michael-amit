@@ -20,10 +20,5 @@ elseif hypothesis.neg == 0 && hypothesis.pos == 0
     predictedLabels = zeros(nExamples, 1);
 end
 
-% index = abs(hypothesis);
-% test = hypothesis > 0;
-% 
-% predictedLabels = double(data(:, index) == test);
-
 end
 
