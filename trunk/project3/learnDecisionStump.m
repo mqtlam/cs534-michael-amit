@@ -48,26 +48,18 @@ for feature = 1:nFeatures
     entropies(feature) = H_Y_X_pos*P_X_pos + H_Y_X_neg*(1-P_X_pos);
 end
 
-% select minimum entropy (same as maximum information gain)
+% select minimum entropy (same as selecting maximum information gain)
 [~, hypothesis.feature] = min(entropies);
 
 % recompute weighted positive and negative examples given best feature
-% to assign leaf labels of the decision stump
 featpos_pos = sum(distribution.*data(:, hypothesis.feature).*labels);
 featpos_neg = sum(distribution.*data(:, hypothesis.feature).*(1-labels));
 featneg_pos = sum(distribution.*(1-data(:, hypothesis.feature)).*labels);
 featneg_neg = sum(distribution.*(1-data(:, hypothesis.feature)).*(1-labels));
 
+% set leaf node labels to majority class
 hypothesis.neg = double(featneg_pos > featneg_neg);
 hypothesis.pos = double(featpos_pos > featpos_neg);
-
-% % pick best test direction
-% predictedLabels = inferDecisionStump(data, hypothesis);
-% errorPos = sum(predictedLabels ~= labels);
-% errorNeg = sum((1-predictedLabels) ~= labels);
-% if errorPos > errorNeg
-%     hypothesis = -hypothesis;
-% end
 
 end
 
