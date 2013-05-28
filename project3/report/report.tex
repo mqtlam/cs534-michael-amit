@@ -46,7 +46,9 @@ Learning is done by going through every feature in the training data and computi
 For AdaBoost, decision stump learning also accepts a distribution of the data as input. Therefore each training example is weighted differently based on the distribution, which affects the information gain computation and leaf node labels in every iteration of AdaBoost.
 
 \section{Bagging}
-Explain bagging and how we implemented
+Bootstrap aggregating (bagging) is a machine learning ensemble algorithm designed to improve the stability and accuracy of machine learning algorithms used in statistical classification and regression. It also reduces variance and helps to avoid over fitting.
+
+Bagging uses different training sets for the learning algorithm and learns a machine learning algorithm which combines the hypothesis learned from the different training sets. To make the training sets, we draw random instances of the whole training set and use the newly generated training sets to learn different hypothesis. Then we combine these different hypothesis by majority voting to come up with the best possible hypothesis for the training set and test the testing data using this hypothesis. Since the random samples of the training data will vary, the hypothesis that we generate will account for most of the variations in the training data and the final combining of the hypothesis will eventually reduce the variance of the classifier.
 
 \section{AdaBoost}
 Boosting is an ensemble method that considers errors from previous hypotheses to decide how to sample the training data for the next iteration. This is in contrast to bagging, which individual classifiers were independent. Boosting works when the base learner is weak learner, i.e. its classification accuracy is slightly better than random.
