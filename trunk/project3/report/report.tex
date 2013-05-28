@@ -48,7 +48,7 @@ For AdaBoost, decision stump learning also accepts a distribution of the data as
 \section{Bagging}
 Bootstrap aggregating (bagging) is a machine learning ensemble algorithm designed to improve the stability and accuracy of machine learning algorithms used in statistical classification and regression. It also reduces variance and helps to avoid over fitting.
 
-Bagging uses different training sets for the learning algorithm and learns a machine learning algorithm which combines the hypothesis learned from the different training sets. To make the training sets, we draw random instances of the whole training set and use the newly generated training sets to learn different hypothesis. Then we combine these different hypothesis by majority voting to come up with the best possible hypothesis for the training set and test the testing data using this hypothesis. Since the random samples of the training data will vary, the hypothesis that we generate will account for most of the variations in the training data and the final combining of the hypothesis will eventually reduce the variance of the classifier.
+Bagging uses different training sets to learn independent smaller hypotheses which are combined to form a final hypothesis for classification. To make a training set (a.k.a. bootstrap sample), we independently draw N random instances of the whole training set (size N) with replacement and use the newly generated training set to learn a hypothesis. (For large N, each bootstrap sample will contain approximately 63.2\% unique examples.) After repeating the bootstrapping procedure to form a set of hypotheses, we combine these different hypotheses by majority voting to produce the best final hypothesis for the training set and test the testing data using this hypothesis. Since the random samples of the training data will vary, the hypothesis that we generate will account for most of the variations in the training data and the final combining of the hypotheses will eventually reduce the variance of the classifier.
 
 \section{AdaBoost}
 Boosting is an ensemble method that considers errors from previous hypotheses to decide how to sample the training data for the next iteration. This is in contrast to bagging, which individual classifiers were independent. Boosting works when the base learner is weak learner, i.e. its classification accuracy is slightly better than random.
@@ -66,31 +66,46 @@ These equations are shown below, for \(m\) training examples \(x_i\) and their l
 The final hypothesis is just the sign of the weighted sum of each hypothesis and its corresponding weight \(\alpha\).
 
 \section{Results}
+For bagging, figure \ref{fig:bagging_trainerrors} plots the training errors versus the ensemble size, and figure \ref{fig:bagging_testerrors} plots the test errors versus the ensemble size. Both error plots are averaged over 5 runs.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[scale=.6]{img/bagging_trainerrors.png}
+  \caption{Bagging training errors on different ensemble sizes averaged over 5 runs.}
+  \label{fig:bagging_trainerrors}
+\end{figure}
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[scale=.6]{img/bagging_testerrors.png}
+  \caption{Bagging test errors on different ensemble sizes averaged over 5 runs.}
+  \label{fig:bagging_testerrors}
+\end{figure}
+
 For AdaBoost, figure \ref{fig:adaboost_trainerrors} plots the training errors versus the ensemble size, and figure \ref{fig:adaboost_testerrors} plots the test errors versus the ensemble size.
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[scale=.75]{img/adaboost_trainerrors.png}
+  \includegraphics[scale=.6]{img/adaboost_trainerrors.png}
   \caption{AdaBoost training errors on different ensemble sizes.}
   \label{fig:adaboost_trainerrors}
 \end{figure}
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[scale=.75]{img/adaboost_testerrors.png}
+  \includegraphics[scale=.6]{img/adaboost_testerrors.png}
   \caption{AdaBoost test errors on different ensemble sizes.}
   \label{fig:adaboost_testerrors}
 \end{figure}
 
 \section{Discussion}
+For bagging the training error decreases as the ensemble size increases. Since the algorithm uses random sampling of the training data, it is expected that the more number of times we sample, the more we will tend to fit the training data. Hence, the training error decreases with increase in the ensemble size.
 
-For Bagging the training error decreases as the ensemble size increases. Since, the algorithm uses random sampling of the training data, it is expected that this will happen as the more number of times we sample, the more and more we will tend to fit the training data. Hence, the training error decreases with increase in the ensemble size.
-For the test results of Bagging, the error decreases as we increase the number of ensembles. For a small ensemble size the algorithm has fewer samples to learn the hypothesis on and so makes more error on the test data. But as the size of the ensemble increases the errors reduce. It performs the best when the ensemble size is 25. After that, increasing the ensemble size does not help in reducing the error as we over fit the hypothesis to the training data.
-
+For the test/generalization error of bagging, the error decreases as we increase the number of ensembles. For a small ensemble size the algorithm has fewer samples to learn the hypothesis on and so makes more error on the test data. But as the size of the ensemble increases the errors reduce. It performs the best when the ensemble size is 25. After that, increasing the ensemble size does not help in reducing the error as we begin to overfit the hypothesis to the training data.
 
 For AdaBoost, the training error appears to decrease as the ensemble size increases but then flattens out at ensemble size 15 and greater for the given training data. This indicates that while AdaBoost continues to select new hypotheses and weights (otherwise it would terminate), the training error does not improve. Interestingly, from observing the ensemble of hypotheses for ensemble size 30, there is a brief period after iteration 15 where the decision stump uses feature 17 iteration after iteration with more or less similar weights but with different leaf node labels. This may explain why the training error doesn't improve; the hypotheses and weights after iteration 15 have negligible impact on the final classifier.
 
-The AdaBoost test (generalization) error decreases and performs the best at around ensemble size 20, but then increases afterward. This trend is typical of test curves in machine learning; it indicates that test error decreases with the training error but eventually increases due to over fitting.
+The AdaBoost test/generalization error decreases and performs the best at around ensemble size 20, but then increases afterward. This trend is typical of test curves in machine learning; it indicates that test error decreases with the training error but eventually increases due to over fitting.
 
 %\begin{align}
 % 1+1=2
