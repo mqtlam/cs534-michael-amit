@@ -83,6 +83,11 @@ For AdaBoost, figure \ref{fig:adaboost_trainerrors} plots the training errors ve
 \end{figure}
 
 \section{Discussion}
+
+For Bagging the training error decreases as the ensemble size increases. Since, the algorithm uses random sampling of the training data, it is expected that this will happen as the more number of times we sample, the more and more we will tend to fit the training data. Hence, the training error decreases with increase in the ensemble size.
+For the test results of Bagging, the error decreases as we increase the number of ensembles. For a small ensemble size the algorithm has fewer samples to learn the hypothesis on and so makes more error on the test data. But as the size of the ensemble increases the errors reduce. It performs the best when the ensemble size is 25. After that, increasing the ensemble size does not help in reducing the error as we over fit the hypothesis to the training data.
+
+
 For AdaBoost, the training error appears to decrease as the ensemble size increases but then flattens out at ensemble size 15 and greater for the given training data. This indicates that while AdaBoost continues to select new hypotheses and weights (otherwise it would terminate), the training error does not improve. Interestingly, from observing the ensemble of hypotheses for ensemble size 30, there is a brief period after iteration 15 where the decision stump uses feature 17 iteration after iteration with more or less similar weights but with different leaf node labels. This may explain why the training error doesn't improve; the hypotheses and weights after iteration 15 have negligible impact on the final classifier.
 
 The AdaBoost test (generalization) error decreases and performs the best at around ensemble size 20, but then increases afterward. This trend is typical of test curves in machine learning; it indicates that test error decreases with the training error but eventually increases due to over fitting.
