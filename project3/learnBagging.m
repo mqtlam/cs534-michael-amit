@@ -1,12 +1,11 @@
 function [ hypothesisStruct ] = learnBagging( data, nEnsembles )
 %LEARNBAGGING Learn ensemble of hypothesis with Bagging.
-%   data:               data matrix; rows = examples, cols = features
-%   labels:             labels associated with data
+%   data:               label/data matrix; 
+%                       rows = examples, cols = [label, features]
 %   nEnsembles:         number of ensembles, a.k.a. number of iterations
-%   hypothesisStruct:   struct containing hypotheses and weights
+%   hypothesisStruct:   struct containing hypotheses
 %                       each hypothesis:
 %                           .h is decision stump hypothesis
-%                           .alpha is weight for weighted vote in the end
 
 %% setup
 hypothesisStruct.h = cell(nEnsembles, 1);
