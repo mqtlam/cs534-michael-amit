@@ -16,7 +16,7 @@ ensembleSizes = [5, 10, 15, 20, 25, 30];
 
 %% bagging
 nRuns = 5;
-trainingErrors = zeros(length(ensembleSizes), 1);
+trainingErrors = zeros(length(ensembleSizes), nRuns);
 testingErrors = zeros(length(ensembleSizes), nRuns);
 trainSet = train.data;
 
