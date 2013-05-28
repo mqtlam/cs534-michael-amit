@@ -14,7 +14,7 @@ hypothesisStruct.h = cell(nEnsembles, 1);
 hypothesisStruct.alpha = zeros(nEnsembles, 1);
 
 %Set the number of samples. 'T'
-T = ceil(size(data,1)/nEnsembles);
+T = size(data,1);
 
 % set initial weights (distribution) to uniform
 distribution = 1/nExamples*ones(T, 1);
@@ -24,7 +24,7 @@ for l = 1:nEnsembles
     
     
     % Randomly select 'T' samples from the data for weak classification.
-    dataSample = datasample(data, T, 'Replace', false);
+    dataSample = datasample(data, T);
     
     trainLabels = dataSample(:, 1);
     trainData = dataSample(:, 2:end);
