@@ -15,28 +15,31 @@ testData = test.data(:, 2:end);
 ensembleSizes = [5, 10, 15, 20, 25, 30];
 
 %% bagging
-for m = 1:5
-
+nRuns = 5;
 trainingErrors = zeros(length(ensembleSizes), 1);
-testingErrors = zeros(length(ensembleSizes), 1);
-
+testingErrors = zeros(length(ensembleSizes), nRuns);
 trainSet = train.data;
+
 % experiment over different ensemble sizes
 for i = 1:length(ensembleSizes)
-    ensembleSize = ensembleSizes(i);    
-    
-    % learn ensemble hypothesis
-    hypothesis = learnBagging(trainSet, ensembleSize);
-    
-    % test on training examples
-    predictedTrainingLabels = inferBagging(trainData , hypothesis);
-    trainingErrors(i) = trainingErrors(i) + sum(predictedTrainingLabels ~= trainLabels)/size(trainLabels, 1);
-    
-    % test on test examples
-    predictedTestingLabels = inferBagging(testData , hypothesis);
-    testingErrors(i) = testingErrors(i) + sum(predictedTestingLabels ~= testLabels)/size(testLabels, 1);
+    for run = 1:nRuns
+        ensembleSize = ensembleSizes(i);
+
+        % learn ensemble hypothesis
+        hypothesis = learnBagging(trainSet, ensembleSize);
+
+        % test on training examples
+        predictedTrainingLabels = inferBagging(trainData , hypothesis);
+        trainingErrors(i, run) = sum(predictedTrainingLabels ~= trainLabels)/size(trainLabels, 1);
+
+        % test on test examples
+        predictedTestingLabels = inferBagging(testData , hypothesis);
+        testingErrors(i, run) = sum(predictedTestingLabels ~= testLabels)/size(testLabels, 1);
+    end
 end
-end
+
+trainingErrors = sum(trainingErrors, 2)/nRuns;
+testingErrors = sum(testingErrors, 2)/nRuns;
 
 % plot training and testing errors
 plot(ensembleSizes, trainingErrors, 's--');
