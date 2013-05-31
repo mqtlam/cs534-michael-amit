@@ -1,0 +1,17 @@
+
+The dataset is ordered according to the following.
+
+Column 1 = Serial number
+Column 2 = Track Start x-coordinate
+Column 3 = Track Start y-coordinate
+Column 4 = Track End x-coordinate
+Column 5 = Track End y-coordinate
+Column 6 = Track start Frame number 
+Column 7 = Track end Frame number 
+Column 8 = Length of track
+Column 9 = Closest Line Id			<= Not using this now. Used it earlier!
+Column 10 = Distance from edge of frame
+Column 11 = Leftward or Rightward.
+
+1 => Rightward
+2 => Leftward
