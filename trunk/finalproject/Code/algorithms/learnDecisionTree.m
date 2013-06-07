@@ -1,11 +1,12 @@
-function [ hypothesis ] = learnDecisionTree( data, labels, distribution, hypothesis, currentNode, currentDepth )
+function [ hypothesis ] = learnDecisionTree( data, labels, distribution, maxDepth, hypothesis, currentNode, currentDepth )
 %LEARNDECISIONTREE Learn a decision tree hypothesis given data, labels
 %and distribution (weights over data).
 %   data:               data matrix; rows = examples, cols = features
 %   labels:             labels associated with data
 %   distribution:       weights over data (elements must sum to one)
 %                       if not provided, distribution is uniform
-%   hypothesis:         decision tree hypothesis
+%   maxDepth:           maximum tree depth (default 10)
+%   hypothesis:         decision tree hypothesis (for recursion)
 %                           each node:
 %                           .feature is feature to split (feature index)
 %                           .threshold is threshold to test on feature
@@ -13,7 +14,7 @@ function [ hypothesis ] = learnDecisionTree( data, labels, distribution, hypothe
 %                           .pos is child node or leaf label of positive branch
 
 %% setup
-MAX_DEPTH = 10;
+DEFAULT_MAX_DEPTH = 10;
 
 [nExamples, nFeatures] = size(data);
 
@@ -25,8 +26,12 @@ end
 % normalize distribution if it hasn't been already
 distribution = distribution./sum(distribution);
 
-% initialize root node of decision tree
 if nargin < 4
+    maxDepth = DEFAULT_MAX_DEPTH;
+end
+
+% initialize root node of decision tree
+if nargin < 5
     currentNode = 1;
     currentDepth = 0;
 end
@@ -78,7 +83,7 @@ end
 [~, hypothesis{currentNode}.feature] = min(entropies);
 hypothesis{currentNode}.threshold = bestThresholds(hypothesis{currentNode}.feature);
 
-if currentDepth + 1 > MAX_DEPTH
+if currentDepth + 1 > maxDepth
     
     % apply threshold to best feature for next operations...
     dataFeature = thresholdData(data(:, hypothesis{currentNode}.feature), hypothesis{currentNode}.threshold);
@@ -110,7 +115,7 @@ else
         labels = dataPos(:, end-1);
         distribution = dataPos(:, end);
         hypothesis{currentNode}.pos = length(hypothesis) + 1;
-        hypothesis = learnDecisionTree(data, labels, distribution, hypothesis, length(hypothesis) + 1, currentDepth+1);
+        hypothesis = learnDecisionTree(data, labels, distribution, maxDepth, hypothesis, length(hypothesis) + 1, currentDepth+1);
     
     else
         
@@ -136,7 +141,7 @@ else
         labels = dataNeg(:, end-1);
         distribution = dataNeg(:, end);
         hypothesis{currentNode}.neg = length(hypothesis) + 1;
-        hypothesis = learnDecisionTree(data, labels, distribution, hypothesis, length(hypothesis) + 1, currentDepth+1);
+        hypothesis = learnDecisionTree(data, labels, distribution, maxDepth, hypothesis, length(hypothesis) + 1, currentDepth+1);
     
     else
        
