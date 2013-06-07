@@ -16,37 +16,49 @@ if exist(filePath, 'file')
     f3 = data(:,11);    %direction
     
     %wt(:,1) = data(:,8) + data(:,10);
+    poswt = 1;
+    negwt = 1;
+    poswt2 = 1;
+    negwt2 = 1;
     finalwt=0;
     finalwt2=0;
     for i=1:size(f1,1)
         
         if ((f1(i) > ybound) && (f2(i) > xbound))
             if f3(i) == 1
+                poswt = poswt+1;
                 finalwt = finalwt + 1; % wt(i);  %right
             else
+                negwt = negwt+1;
                 finalwt = finalwt - 1; %wt(i);  %left
             end
         end
         
         if ((f1(i) > ybound) && (f2(i) < (xbound - 0.45)))
             if f3(i) == 1
+                poswt2 = poswt2+1;
                 finalwt2 = finalwt2 + 1; % wt(i);  %right
             else
+                negwt2 = negwt2+1;
                 finalwt2 = finalwt2 - 1; %wt(i);  %left
             end
         end
     end
     
     if(finalwt > 0)
-        pred1 = 1;
+        %pred1 = 1;
+        pred1 = poswt/(negwt+poswt);
     else
-        pred1 = 2;
+        %pred1 = 2;
+        pred1 = -negwt/(poswt+negwt);
     end
     
     if(finalwt2 > 0)
-        pred2 = 1;
+        %pred2 = 1;
+        pred2 = poswt2/(poswt2+negwt2);
     else
-        pred2 = 2;
+        %pred2 = 2;
+        pred2 = -negwt2/(poswt2+negwt2);
     end
     %%
 %     for i=1:size(f1)

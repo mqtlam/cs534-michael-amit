@@ -100,7 +100,9 @@ for i=1:175
     k=k+1;
 end
 
-pData = uint8 (pData);
+%pData = uint8 (pData);
 save('dataset4', 'pData');
-save('vidnames4', 'names');
+n=[];
+n = cat(1, n, names(1:124,:));
+save('vidnames4', 'n');
 end
