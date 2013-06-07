@@ -1,6 +1,5 @@
 clear;
 
-%% loop over datasets
 %for iter = [2,4]
     %fprintf('\nUSING DATASET %d...\n\n', iter);
 
@@ -30,9 +29,10 @@ clear;
     
     X = [];
     y = [];
+    vidnames = [];
     for game = [2,3,4]
         load(sprintf('../ProjectDataset/game%d/dataset%d.mat', game, game));
-        %load(sprintf('../ProjectDataset/game%d/vidnames%d.mat', game, game));
+        load(sprintf('../ProjectDataset/game%d/vidnames%d.mat', game, game));
 
         % features
         %X = pData(:, 1:end-1);
@@ -43,20 +43,27 @@ clear;
         %y = pData(:, end);
         y = vertcat(y, pData(:, end));
         y(y == 2) = 0;
+        
+        % video names
+        vidnames = vertcat(vidnames, n);
     end
 
     % split into training and testing sets
     nTraining = ceil(PERCENT_TRAINING*nExamples);
     nTest = nExamples - nTraining;
     if RANDOMIZE_DATASET
-        augData = shuffle_rows([X, y]);
-        X = augData(:, 1:end-1);
-        y = augData(:, end);
+        augData = shuffle_rows([X, y, (1:nExamples)']);
+        X = augData(:, 1:end-2);
+        y = augData(:, end-1);
+        vidnames = vidnames(augData(:, end), :);
     end
     XTrain = X(1:nTraining, :);
     yTrain = y(1:nTraining);
     XTest = X(nTraining+1:end, :);
     yTest = y(nTraining+1:end);
+    
+    vidnamesTrain = vidnames(1:nTraining, :);
+    vidnamesTest = vidnames(nTraining+1:end, :);
 
     %% evaluate using AdaBoost on different ensemble sizes
     adaBoostResults = cell(length(ENSEMBLE_SIZES), 1);
@@ -87,6 +94,9 @@ clear;
         adaBoostResults{cnt}.testAccuracy = aTest;
         adaBoostResults{cnt}.testRawConfusionMatrix = confusionmatrix(yTest, yTestPred, 1);
         adaBoostResults{cnt}.testConfusionMatrix = confusionmatrix(yTest, yTestPred);
+        
+        adaBoostResults{cnt}.trainIncorrectVideos = vidnamesTrain(yTrain ~= yTrainPred, :);
+        adaBoostResults{cnt}.testIncorrectVideos = vidnamesTest(yTest ~= yTestPred, :);
 
         adaBoostTrainErrors(cnt) = eTrain;
         adaBoostTestErrors(cnt) = eTest;
@@ -125,6 +135,9 @@ clear;
         decisionTreeResults{cnt}.testRawConfusionMatrix = confusionmatrix(yTest, yTestPred, 1);
         decisionTreeResults{cnt}.testConfusionMatrix = confusionmatrix(yTest, yTestPred);
 
+        decisionTreeResults{cnt}.trainIncorrectVideos = vidnamesTrain(yTrain ~= yTrainPred, :);
+        decisionTreeResults{cnt}.testIncorrectVideos = vidnamesTest(yTest ~= yTestPred, :);
+        
         decisionTreeTrainErrors(cnt) = eTrain;
         decisionTreeTestErrors(cnt) = eTest;
 
