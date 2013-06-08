@@ -2,6 +2,8 @@
 \usepackage{nips13submit_e,times}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{graphicx}
+\usepackage{subcaption}
 %\documentstyle[nips13submit_09,times,art10]{article} % For LaTeX 2.09
 
 
@@ -48,24 +50,69 @@ Write abstract here.
 \end{abstract}
 
 \section{Introduction}
+\textbf{Clearly state the problem. Motivate the problem.}
+
 Write paragraphs here.
 
-\section{Overview of Methods}
+\section{Methodology}
+\textbf{Motivate the method and explain why chose it.}
+
+Write a short paragraph here.
+
+\subsection{Features}
+\textbf{Explain how we formulated features.}
+
 Write paragraphs here.
 
-\section{Features}
-Write paragraphs here.
+\subsection{Learning}
+\textbf{Justify learning algorithms.}
 
-\section{Learning}
-We used two different strategies for learning the best rectangle: 1) AdaBoost with decision stumps and 2) decision trees. The critical question for the decision tree is when to stop growing the tree. We investigate this as a parameter in our experiments.
+We decided to use standard machine learning algorithms that produce nonlinear decision boundaries.
+
+We used two different strategies for learning the best rectangle: 1) AdaBoost with decision stumps and 2) decision trees.
+
+The critical question for the decision tree is when to stop growing the tree. We investigate this as a parameter in our experiments.
 
 \section{Experiments}
-For AdaBoost, we plot the training and test error as a function of ensemble size.
+\textbf{Justify experimental evaluations done in a proper and fair manner.}
 
-For the decision tree, we plot the training and test error as a function of the maximum decision tree depth.
+In this section we detail our dataset, training and testing procedure, and present our results.
+
+\subsection{Dataset}
+Our football dataset consists of three games, which we will call game2, game3 and game4. Game2 consists of 95 videos, game3 consists of 95 videos, and game4 consists of 124 videos. Each video represents a play.
+
+\subsection{Training and Testing}
+We concatenated all three game datasets into one dataset of 314 instances. Each instance corresponds to a video with features defined earlier and its true label (left or right gameplay). We randomly selected 75\% of the instances for our training set and the remaining 25\% as our test set.
+
+\subsection{Results}
+We compared the performance of using AdaBoost and decision tree on varying parameters.
+
+For AdaBoost, the ensemble size is the parameter we vary. Figure \ref{fig:adaboost_errors} presents the plot of training and test errors as a function of ensemble size.
+
+For the decision tree, the maximum depth size is the parameter we vary. Figure \ref{fig:tree_errors} presents the plot of training and test errors as a function of the maximum decision tree depth.
+
+\begin{figure}
+\centering
+ \begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{img/boost_errors.png}
+  \caption{AdaBoost}
+  \label{fig:adaboost_errors}
+ \end{subfigure}%
+ \begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{img/tree_errors.png}
+  \caption{Decision Tree}
+  \label{fig:tree_errors}
+ \end{subfigure}
+\caption{Training and test errors for AdaBoost and decision tree. (a) AdaBoost training and test errors are a function of ensemble size. (b) Decision tree training and test errors are a function of maximum depth size.}
+\label{fig:errors}
+\end{figure}
 
 \section{Conclusion}
-Write paragraphs here.
+\textbf{Summarize methodology and results.}
+
+Write paragraph here.
 
 %\section{Submission of papers to NIPS 2013}
 %
