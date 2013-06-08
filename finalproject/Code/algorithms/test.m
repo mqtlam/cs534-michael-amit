@@ -6,7 +6,7 @@ clear;
     %% settings
     ENSEMBLE_SIZES = [5, 10, 15, 20, 25, 30, 35, 40];
     TREE_MAX_DEPTHS = [0, 1, 2, 3, 4, 5, 6, 7];
-
+    
     PERCENT_TRAINING = .75; % percentage of dataset allocated for training
     RANDOMIZE_DATASET = 1;  % randomize dataset for training/test split
     FIX_SEED = 1;           % fix random seed or not
@@ -181,6 +181,38 @@ clear;
     ylabel('Test Error');
     title('Decision Tree: Test Error vs. Ensemble Size');
     print('-djpeg', strcat(SAVE_FILENAME, '_tree_test.jpg'));
+    if PAUSE_PLOT
+        pause;
+    end
+    
+    % one plot for adaboost errors
+    plot(ENSEMBLE_SIZES', adaBoostTrainErrors,...
+        'bs--',...
+        ENSEMBLE_SIZES', adaBoostTestErrors,...
+        'ro--');
+        
+    xlabel('Ensemble Size');
+    ylabel('Error');
+    title('AdaBoost: Errors vs. Ensemble Size');
+    legend('Training Error', 'Test Error');
+    %print('-djpeg', strcat(SAVE_FILENAME, '_boost_errors.jpg'));
+    saveas(gcf, strcat(SAVE_FILENAME, '_boost_errors.fig'))
+    if PAUSE_PLOT
+        pause;
+    end
+    
+    % one plot for decision tree errors
+    plot(TREE_MAX_DEPTHS', decisionTreeTrainErrors,...
+        'bs--',...
+        TREE_MAX_DEPTHS', decisionTreeTestErrors,...
+        'ro--');
+        
+    xlabel('Max Depth');
+    ylabel('Error');
+    title('Decision Tree: Errors vs. Max Depth');
+    legend('Training Error', 'Test Error');
+    %print('-djpeg', strcat(SAVE_FILENAME, '_tree_errors.jpg'));
+    saveas(gcf, strcat(SAVE_FILENAME, '_tree_errors.fig'))
     if PAUSE_PLOT
         pause;
     end
