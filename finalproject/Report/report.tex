@@ -79,7 +79,7 @@ The aim of this project is to help develop a part of such a coaching software. T
   \centering
   \includegraphics[width=1\linewidth]{img/football_frame4.jpg}
  \end{subfigure}
-\caption{Example of one particular football play video footage. Note the wide receiver (bottom most player in white) dashes off to the left. The goal is to classify this video as ``left'' by tracking the wide receiver.}
+\caption{An example sequence of a particular football play video footage. Note the wide receiver (bottommost player in white) dashes off to the left. The goal is to classify this video as ``left'' by tracking the wide receiver.}
 \label{fig:football}
 \end{figure}
 }
@@ -88,7 +88,7 @@ In order to recognize the direction of offense we need to know some domain knowl
 
 These two wide receivers are instrumental in the detection of the direction of the play as they run fast down the field in the direction of offense from the moment of snap and can be used to determine the direction of the play. If we are able to get good, long tracks on these players, and if we are able to tell that these tracks belong to the wide receivers, we can find the direction of those tracks and ultimately determine the offensive direction of play. Figure \ref{fig:football} shows an example of video footage where the wide receiver runs fast down the field in the direction of offense, which is to the left of the video frame.
 
-We decided to use KLT tracks [1,2,3] to do the video tracking on different points in the video. The KLT tracking method selects points that have a high gradient with respect to its neighbors. This makes it select ``interesting'' points such as corners in the video frame. We want to use these interesting points and specify which of these points correspond to the wide player on the pitch. Using KLT tracks, we can get the length of the track easily by simple geometric computation on the track features. Also, we can get the distance of the track from the bottom edge of the frame.
+We decided to use KLT tracks [1,2,3] to do the video tracking on different points in the video. The KLT tracking method selects points that have a high gradient with respect to its neighbors. This makes it select ``interesting'' points such as corners in the video frame. We want to use these interesting points and specify which of these points correspond to the wide receiver on the field. Using KLT tracks, we can get the length of the track easily by simple geometric computation on the track features. Also, we can get the distance of the track from the bottom edge of the frame. Figure \ref{fig:klt} visualizes these KLT tracks.
 
 We use KLT tracks to generate a dataset for the videos with the following features:
 
@@ -130,18 +130,40 @@ As mentioned before we know that the wide players will be on the near side of th
 
 This information is vital, since one player will have multiple tracks in one and a half second which will all be close by and going along the same direction. So, if we include the information of the direction of the track (left or right) we will be able to make the differentiation between the noisy tracks and actual wide player tracks better. Thus, the reason for selecting this as a feature.
 
-In short, we want to track those points that have a high length and are closer to the edge of the field, moving in one direction so that we can say that the tracked point is a wide receiver.
+\begin{figure}
+\centering
+ \begin{subfigure}{.32\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{img/127.png}
+ \end{subfigure}\hspace{.5em}%
+ \begin{subfigure}{.32\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{img/132.png}
+ \end{subfigure}\hspace{.5em}%
+ \begin{subfigure}{.32\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{img/137.png}
+ \end{subfigure}\hspace{.5em}%
+\caption{Another example sequence of a particular football play shown with KLT tracks extracted. Green tracks denote left direction and red tracks denote right direction. Faster moving objects have longer tracks. Using domain knowledge, we can make a good guess for which tracks in a video belong to the wide receiver. Note the wide receiver (bottommost player in black) dashes off to the left. The green KLT tracks on this player get longer and are near to the edge of the field.}
+\label{fig:klt}
+\end{figure}
 
-In the end, we use 60 different features for each video to submit to our learning algorithms. These 60 features are the predictions of 60 different rectangles.
+In short, we want to track those points that have a high length and are closer to the edge of the field, moving in one direction so that we can say that the tracked point is a wide receiver. Again, figure \ref{fig:klt} summarizes these features' relevance.
 
 \section{Learning}
 %\textbf{Justify learning algorithms.}
 
-We decided to use machine learning algorithms that produce nonlinear decision boundaries. Since our features are 60 different rectangles, it is not clear that a linear decision boundary would capture an effective hypothesis space. It is also not clear what type of kernel to use for kernel-based methods.
+Recall that the goal is to learn the best rectangle in the plot where the $y$-direction represents the length of the track while the $x$ direction represents the closeness to the bottom edge of the field. A majority vote of track directions in this rectangle will denote the direction of play.
 
-Therefore we considered tree-based approaches to learning a nonlinear hypothesis. We used two different approaches: AdaBoost [4] with decision stumps and decision trees [5]. We think a hypothesis generated from AdaBoost with decision stumps makes the most sense since the prediction would be a linear combination of the 60 rectangle features. Each feature would be given a weight for prediction. The hypothesis generated from the decision tree makes sense for capturing decisions on a subset of the 60 features, but it is not immediately clear when to stop growing the tree. We investigate this as a parameter in our experiments.
+Our unique strategy is to use many different random rectangles as features for our learning algorithm and learn a linear combination of those features. First we construct many different rectangles with random sizes and positions in the plot. These rectangles are fixed across every video. For each video, we count the number of left and right tracks falling in each rectangle and produce a measure of ``leftness'' and ``rightness'' for that rectangle. Specifically, for a particular rectangle, we add up all left track counts falling in that rectangle, subtract all right track counts and normalize by the number of tracks; this produces a ``net normalized direction count.''
 
-For the decision tree, we used the C4.5 algorithm for generating the decision tree based on information gain. Since our features are continuous, we also threshold each feature and select the threshold that maximizes the information gain, before selecting the maximum information gain from all the features. The decision stump is simply a one-level version of the decision tree used in the AdaBoost meta-learning algorithm.
+In the end, we use 60 different features (rectangles) for each video to submit to our learning algorithms. These 60 features are ``predictions'' of 60 different rectangles. These 60 features will be our machine learning features to input into a learning algorithm. Since each video is also manually annotated as left or right offensive direction, we can use a supervised machine learning algorithm to learn a hypothesis that predicts the offensive direction given a video.
+
+Our strategy naturally lends to using boosting since we want to learn a linear combination of weak classifiers. Our weak classifiers can be decision stumps operating on one feature, which is some rectangle in the plot. Each feature would be given a weight for the final prediction. We decided to use AdaBoost [4] as our meta-learning algorithm with decision stumps as the base learner.
+
+We also decided to use decision trees [5] to compare our results with AdaBoost since it is tree-based. We used the C4.5 algorithm for generating the decision tree based on information gain. Since our features are continuous, we also threshold each feature and select the threshold that maximizes the information gain, before selecting the maximum information gain from all the features. Note that the decision stump is simply a one-level version of the decision tree used in the AdaBoost meta-learning algorithm.
+
+While the hypothesis generated from the decision tree makes sense for capturing decisions on a subset of the 60 rectangles, it is not immediately clear when to stop growing the tree. We investigate this as a parameter in our experiments.
 
 \section{Experiments}
 %\textbf{Justify experimental evaluations done in a proper and fair manner.}
@@ -151,10 +173,6 @@ Our football dataset consists of three games, which we will call game1, game2 an
 To form our training and test sets for evaluation, we concatenated all three game datasets into one dataset of 314 instances. Each instance corresponds to a video with the 60 features described earlier and its true label (i.e. left or right direction of offensive gameplay). We randomly selected 75\% of the instances for our training set and the remaining 25\% as our test set.
 
 For empirical evaluation, we compared the performance of using AdaBoost and decision tree on varying parameters. For AdaBoost, we vary the ensemble size as the parameter. For the decision tree, we vary the maximum depth size as the parameter; the tree is only allowed to grow up to the maximum depth.
-
-Figure \ref{fig:adaboost_errors} presents the plot of training and test errors as a function of ensemble size. We see that the training error decreases reasonably. We also observe that the test error decreases until ensemble size 35. The test error at that point is a little under 20\%, which is reasonable.
-
-Figure \ref{fig:tree_errors} presents the plot of training and test errors as a function of the maximum decision tree depth. We also see that the training error decreases reasonably. In fact it goes to zero at around a maximum depth of 6. At that point the test error is not good compared to smaller maximum depth sizes, which indicates that the decision tree is over-fitting the data. We also observe that the test error begins to increase early on. The best maximum depth is probably around 2. The test error is a little under 20\%, which is reasonable and comparable to the error from AdaBoost.
 
 \begin{figure}
 \centering
@@ -174,10 +192,14 @@ Figure \ref{fig:tree_errors} presents the plot of training and test errors as a 
 \label{fig:errors}
 \end{figure}
 
+Figure \ref{fig:adaboost_errors} presents the plot of training and test errors as a function of ensemble size. We see that the training error decreases reasonably. We also observe that the test error decreases until ensemble size 35. The test error at that point is a little under 20\%, which is reasonable.
+
+Figure \ref{fig:tree_errors} presents the plot of training and test errors as a function of the maximum decision tree depth. We also see that the training error decreases reasonably. In fact it goes to zero at around a maximum depth of 6. At that point the test error is not good compared to smaller maximum depth sizes, which indicates that the decision tree is over-fitting the data. We also observe that the test error begins to increase early on. The best maximum depth is probably around 2. The test error is a little under 20\%, which is reasonable and comparable to the error from AdaBoost.
+
 \section{Conclusion}
 %\textbf{Summarize methodology and results.}
 
-In this paper, we have motivated the problem of predicting the direction of the offensive play in a video. We have presented a framework for extracting useful features from a video and using them with machine learning to make predictions. Our results using decision trees and boosting are good enough to make accurate predictions.
+In this paper, we have motivated the problem of predicting the direction of the offensive play in a video. We have presented a framework for extracting useful features from a video and using them with machine learning to make predictions. Our results using boosting and decision trees yield promising accurate predictions.
 
 %\section{Submission of papers to NIPS 2013}
 %
