@@ -146,17 +146,17 @@ The goal then is to identify the best rectangles which will denote the direction
 
 The features that we have considered here are as follows:
 
-\begin{description}
-	\item[Length of the track.] \hfill \\
-	We know from the domain knowledge that the wide receiver will be the one who will make a big rush down field so that we will get good, continuous and long tracks on him. Also, the other players, like the free safety, quarterback or guard players will not move much in the first one and a half second and will have relatively smaller tracks. So, we wish to select those tracks that have a high length as feature.
+\subsection*{Length of the track:}
+
+We know from the domain knowledge that the wide receiver will be the one who will make a big rush down field so that we will get good, continuous and long tracks on him. Also, the other players, like the free safety, quarterback or guard players will not move much in the first one and a half second and will have relatively smaller tracks. So, we wish to select those tracks that have a high length as feature.
 	
-	\item[Distance from the edge of the field.] \hfill \\
-	As mentioned before we know that the wide receivers will be on the near side of the field. The orientation of the play recording is always such that the wide receiver that we want to track will always be on the bottom most part of the frame. So, we have selected the distance from the edge of the field as our next feature. 
+\subsection*{Distance from the edge of the field:}
+
+As mentioned before we know that the wide receivers will be on the near side of the field. The orientation of the play recording is always such that the wide receiver that we want to track will always be on the bottom most part of the frame. So, we have selected the distance from the edge of the field as our next feature. 
 	
-	\item[Track direction with respect to the field.] \hfill \\
-	This information is vital since one player will have multiple tracks in one and a half second which will all be close by and going along the same direction. So if we include the information of the direction of the track (left or right) we will be able to better differentiate between the noisy tracks and actual wide player tracks, thus the reason for selecting this as a feature.
-	
-\end{description}
+\subsection*{Track direction with respect to the field:}
+
+This information is vital since one player will have multiple tracks in one and a half second which will all be close by and going along the same direction. So if we include the information of the direction of the track (left or right) we will be able to better differentiate between the noisy tracks and actual wide player tracks, thus the reason for selecting this as a feature.
 
 In short, we want to track those points that have a long length and are closer to the edge of the field, moving in one direction so that we can say that the tracked point is a wide receiver. Again, figure \ref{fig:klt} summarizes these features' relevance.
 
